@@ -19,6 +19,8 @@ def reversals(series):
     d_last = (x - x_last)
     
     for x_next in series:
+        if x_next == x:
+            continue
         d_next = x_next - x
         if d_last * d_next < 0:
             yield x
