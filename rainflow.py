@@ -4,7 +4,6 @@ Implements rainflow cycle counting algorythm for fatigue analysis
 according to section 5.4.4 in ASTM E1049-85 (2011).
 """
 from collections import deque
-from itertools import chain, groupby
 
 
 def reversals(series):
@@ -68,24 +67,26 @@ def extract_cycles(series):
 
 
 
-def count_cycles(series):
+def count_cycles(series, ndigits=None):
     """
     Returns a sorted list containig pairs of cycle magnitude and count.
     One-half cycles are counted as 0.5, so the returned counts may not be
     whole numbers. The cycles are extracted from the iterable *series*
-    using the extract_cycles function.
+    using the extract_cycles function. If *ndigits* is given the cycles
+    will be rounded to the given number of digits before counting.
     """
     full, half = extract_cycles(series)
     
-    # Add 1.0 weight to the full cycles and 0.5 weight to one-half cycles
-    full = ((x, 1.0) for x in full)
-    half = ((x, 0.5) for x in half)
-    cycles = sorted(chain(full, half))
+    # Round the cycles if requested
+    if ndigits is not None:
+        full = (round(x, ndigits) for x in full)
+        half = (round(x, ndigits) for x in half)
     
-    # Group cycles by cycle magnitude and sum their weights
-    counts = []
-    for value, cycles in groupby(cycles, lambda c: c[0]):
-        count = sum(c[1] for c in cycles)
-        counts.append((value, count))
+    # Count cycles
+    counts = defaultdict(float)
+    for x in full:
+        counts[x] += 1.0
+    for x in half:
+        counts[x] += 0.5
     
-    return counts
+    return sorted(counts.items())
