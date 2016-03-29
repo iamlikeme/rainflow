@@ -1,2 +1,0 @@
-axes.grid   : True   # display grid or not
-savefig.dpi : 300    # figure dots per inch
