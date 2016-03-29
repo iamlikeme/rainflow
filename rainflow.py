@@ -8,8 +8,8 @@ from collections import deque, defaultdict
 
 def reversals(series):
     """
-    A generator function which iterates over the reversals in the given
-    *series* (an iterable). Reversals are the points at which the first
+    A generator function which iterates over the reversals in the iterable
+    *series*. Reversals are the points at which the first
     derivative on the series changes sign. The generator never yields
     the first and the last points in the series.
     """
