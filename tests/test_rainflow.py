@@ -6,7 +6,7 @@ class TestRainflowCounting(unittest.TestCase):
     cycles = [(3, 0.5), (4, 1.5), (6, 0.5), (8, 1.0), (9, 0.5)]
     
     def test_rainflow_counting(self):
-        self.assertItemsEqual(rainflow.count_cycles(self.series), self.cycles)
+        self.assertEqual(rainflow.count_cycles(self.series), self.cycles)
     
     
     def test_rainflow_ndigits(self):
