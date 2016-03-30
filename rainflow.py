@@ -15,7 +15,7 @@ def reversals(series):
     """
     series = iter(series)
     
-    x_last, x = series.next(), series.next()
+    x_last, x = next(series), next(series)
     d_last = (x - x_last)
     
     for x_next in series:
