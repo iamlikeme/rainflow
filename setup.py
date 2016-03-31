@@ -1,16 +1,10 @@
 from distutils.core import setup
 
-with open("LICENSE") as f:
-    LICENSE = f.read()
-
-try:
-    import pypandoc
-    LONG_DESCRIPTION = pypandoc.convert("README.md", "rst")
-except ImportError:
-    LONG_DESCRIPTION = open("README.md").read()    
+LICENSE = open("LICENSE").read()
+LONG_DESCRIPTION = open("README.md").read()    
 
 setup(name='rainflow',
-      version='1.0',
+      version='1.0.1',
       author='Piotr Janiszewski',
       author_email='i.am.like.me@gmail.com',
       url='https://github.com/iamlikeme/rainflow/',
