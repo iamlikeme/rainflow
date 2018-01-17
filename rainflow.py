@@ -3,7 +3,7 @@
 Implements rainflow cycle counting algorythm for fatigue analysis
 according to section 5.4.4 in ASTM E1049-85 (2011).
 """
-__version__ = "1.0.1"
+__version__ = "2.0.0"
 
 from collections import deque, defaultdict
 
