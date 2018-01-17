@@ -24,9 +24,24 @@ number of cycles:
      (0.48294318988133728, 0.5), (0.52799626197601901, 0.5), (0.78150280937784777, 0.5),
      (1.102640610792428, 0.5)]
 ```
+
 Not interested in all the decimals? Use *ndigits*:
 ```python
 >>> rainflow.count_cycles(y, ndigits=2)
     [(0.11, 1.5), (0.21, 1.5), (0.37, 0.5), (0.44, 0.5), (0.48, 0.5), (0.53, 0.5),
      (0.78, 0.5), (1.1, 0.5)]
+```
+
+If you need more detailed output, like cycle lows, highs or means, use `extract_cycles`:
+```python
+>>> for low, high, mult in rainflow.extract_cycles(y):
+...     low, high = sorted((low, high))
+...     mean = 0.5 * (high + low)
+...     rng = high - low
+```
+
+Running tests
+-------------
+```
+python -m python -m unittest tests/*.py
 ```
