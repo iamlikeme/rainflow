@@ -79,7 +79,6 @@ def extract_cycles(series):
         while len(points) > 1:
             yield points[-2], points[-1], 0.5
             points.pop()
-    #return full, half
 
 
 def count_cycles(series, ndigits=None):
