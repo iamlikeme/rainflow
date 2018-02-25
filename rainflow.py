@@ -3,9 +3,20 @@
 Implements rainflow cycle counting algorythm for fatigue analysis
 according to section 5.4.4 in ASTM E1049-85 (2011).
 """
-__version__ = "1.0.1"
+__version__ = "2.0.0"
 
 from collections import deque, defaultdict
+import functools
+
+
+def get_round_function(ndigits=None):
+    if ndigits is None:
+        def func(x):
+            return x
+    else:
+        def func(x):
+            return round(x, ndigits)
+    return func
 
 
 def reversals(series):
@@ -16,10 +27,10 @@ def reversals(series):
     the first and the last points in the series.
     """
     series = iter(series)
-    
+
     x_last, x = next(series), next(series)
     d_last = (x - x_last)
-    
+
     for x_next in series:
         if x_next == x:
             continue
@@ -30,15 +41,29 @@ def reversals(series):
         d_last = d_next
 
 
+def _sort_lows_and_highs(func):
+    "Decorator for extract_cycles"
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        for low, high, mult in func(*args, **kwargs):
+            if low < high:
+                yield low, high, mult
+            else:
+                yield high, low, mult
+    return wrapper
 
+
+@_sort_lows_and_highs
 def extract_cycles(series):
     """
-    Returns two lists: the first one containig full cycles and the second
-    containing one-half cycles. The cycles are extracted from the iterable
-    *series* according to section 5.4.4 in ASTM E1049 (2011).
+    A generator function which extracts cycles from the iterable *series*
+    according to section 5.4.4 in ASTM E1049 (2011).
+
+    The generator produces tuples (low, high, mult), where low and high
+    define cycle amplitude and mult equals to 1.0 for full cycles and 0.5
+    for half cycles.
     """
     points = deque()
-    full, half = [], []
 
     for x in reversals(series):
         points.append(x)
@@ -53,11 +78,11 @@ def extract_cycles(series):
             elif len(points) == 3:
                 # Y contains the starting point
                 # Count Y as one-half cycle and discard the first point
-                half.append(Y)
+                yield points[-3], points[-2], 0.5
                 points.popleft()
             else:
                 # Count Y as one cycle and discard the peak and the valley of Y
-                full.append(Y)
+                yield points[-3], points[-2], 1.0
                 last = points.pop()
                 points.pop()
                 points.pop()
@@ -65,10 +90,8 @@ def extract_cycles(series):
     else:
         # Count the remaining ranges as one-half cycles
         while len(points) > 1:
-            half.append(abs(points[-2] - points[-1]))
+            yield points[-2], points[-1], 0.5
             points.pop()
-    return full, half
-
 
 
 def count_cycles(series, ndigits=None):
@@ -79,18 +102,10 @@ def count_cycles(series, ndigits=None):
     using the extract_cycles function. If *ndigits* is given the cycles
     will be rounded to the given number of digits before counting.
     """
-    full, half = extract_cycles(series)
-    
-    # Round the cycles if requested
-    if ndigits is not None:
-        full = (round(x, ndigits) for x in full)
-        half = (round(x, ndigits) for x in half)
-    
-    # Count cycles
     counts = defaultdict(float)
-    for x in full:
-        counts[x] += 1.0
-    for x in half:
-        counts[x] += 0.5
-    
+    round_ = get_round_function(ndigits)
+
+    for low, high, mult in extract_cycles(series):
+        delta = round_(abs(high - low))
+        counts[delta] += mult
     return sorted(counts.items())

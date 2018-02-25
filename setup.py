@@ -1,10 +1,10 @@
 from distutils.core import setup
 
 LICENSE = open("LICENSE").read()
-LONG_DESCRIPTION = open("README.md").read()    
+LONG_DESCRIPTION = open("README.md").read()
 
 setup(name='rainflow',
-      version='1.0.1',
+      version='2.0.0',
       author='Piotr Janiszewski',
       author_email='i.am.like.me@gmail.com',
       url='https://github.com/iamlikeme/rainflow/',
