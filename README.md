@@ -1,9 +1,16 @@
 Rainflow
 ========
 
-Rainflow is a Python implementation of the rainflow cycle counting algorythm
-for fatigue analysis according to ASTM E1049-85. No dependencies beside Python's
-standard library. Supports both Python 2 and 3.
+`rainflow` is a Python implementation of the ASTM E1049-85 rainflow cycle counting
+algorythm for fatigue analysis. No dependencies beside Python's standard library.
+Supports both Python 2 and 3.
+
+Installation
+------------
+
+```
+pip install rainflow
+```
 
 Usage
 -----
