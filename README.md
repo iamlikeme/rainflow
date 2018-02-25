@@ -35,7 +35,6 @@ Not interested in all the decimals? Use *ndigits*:
 If you need more detailed output, like cycle lows, highs or means, use `extract_cycles`:
 ```python
 >>> for low, high, mult in rainflow.extract_cycles(y):
-...     low, high = sorted((low, high))
 ...     mean = 0.5 * (high + low)
 ...     rng = high - low
 ```
@@ -43,5 +42,5 @@ If you need more detailed output, like cycle lows, highs or means, use `extract_
 Running tests
 -------------
 ```
-python -m python -m unittest tests/*.py
+python -m unittest tests/*.py
 ```

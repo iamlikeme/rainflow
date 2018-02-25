@@ -6,6 +6,7 @@ according to section 5.4.4 in ASTM E1049-85 (2011).
 __version__ = "2.0.0"
 
 from collections import deque, defaultdict
+import functools
 
 
 def get_round_function(ndigits=None):
@@ -40,6 +41,19 @@ def reversals(series):
         d_last = d_next
 
 
+def _sort_lows_and_highs(func):
+    "Decorator for extract_cycles"
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        for low, high, mult in func(*args, **kwargs):
+            if low < high:
+                yield low, high, mult
+            else:
+                yield high, low, mult
+    return wrapper
+
+
+@_sort_lows_and_highs
 def extract_cycles(series):
     """
     A generator function which extracts cycles from the iterable *series*
@@ -47,8 +61,7 @@ def extract_cycles(series):
 
     The generator produces tuples (low, high, mult), where low and high
     define cycle amplitude and mult equals to 1.0 for full cycles and 0.5
-    for half cycles. Note that low and high are not necessarily ordered,
-    so do not rely on low < high.
+    for half cycles.
     """
     points = deque()
 
