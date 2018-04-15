@@ -13,7 +13,22 @@ class TestRainflowCounting(unittest.TestCase):
         ))
 
     def test_rainflow_counting(self):
-        self.assertEqual(rainflow.count_cycles(self.series), self.cycles)
+        self.assertEqual(
+            rainflow.count_cycles(self.series),
+            self.cycles,
+        )
+        self.assertEqual(
+            rainflow.count_cycles(self.series[1:-1], left=True, right=True),
+            self.cycles,
+        )
+        self.assertEqual(
+            rainflow.count_cycles(self.series[1:], left=True),
+            self.cycles,
+        )
+        self.assertEqual(
+            rainflow.count_cycles(self.series[:-1], right=True),
+            self.cycles,
+        )
 
     def test_rainflow_ndigits(self):
         series = [x + 0.01 * random.random() for x in self.series]

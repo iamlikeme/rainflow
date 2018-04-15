@@ -19,18 +19,35 @@ def get_round_function(ndigits=None):
     return func
 
 
-def reversals(series):
-    """
-    A generator function which iterates over the reversals in the iterable
-    *series*. Reversals are the points at which the first
-    derivative on the series changes sign. The generator never yields
-    the first and the last points in the series.
+def reversals(series, left=False, right=False):
+    """Iterate reversal points in the series.
+
+    A reversal point is a point in the series at which the first derivative
+    changes sign. Reversal is undefined at the first (last) point because the
+    derivative before (after) this point is undefined. The first and the last
+    points may be treated as reversals by setting the optional parameters
+    `left` and `right` to True.
+
+    Parameters
+    ----------
+    series : iterable sequence of numbers
+    left: bool, optional
+        If True, yield the first point in the series (treat it as a reversal).
+    right: bool, optional
+        If True, yield the last point in the series (treat it as a reversal).
+
+    Yields
+    ------
+    float
+        Reversal points.
     """
     series = iter(series)
 
     x_last, x = next(series), next(series)
     d_last = (x - x_last)
 
+    if left:
+        yield x_last
     for x_next in series:
         if x_next == x:
             continue
@@ -39,6 +56,8 @@ def reversals(series):
             yield x
         x_last, x = x, x_next
         d_last = d_next
+    if right:
+        yield x_next
 
 
 def _sort_lows_and_highs(func):
@@ -54,18 +73,27 @@ def _sort_lows_and_highs(func):
 
 
 @_sort_lows_and_highs
-def extract_cycles(series):
-    """
-    A generator function which extracts cycles from the iterable *series*
-    according to section 5.4.4 in ASTM E1049 (2011).
+def extract_cycles(series, left=False, right=False):
+    """Iterate cycles in the series.
 
-    The generator produces tuples (low, high, mult), where low and high
-    define cycle amplitude and mult equals to 1.0 for full cycles and 0.5
-    for half cycles.
+    Parameters
+    ----------
+    series : iterable sequence of numbers
+    left: bool, optional
+        If True, treat the first point in the series as a reversal.
+    right: bool, optional
+        If True, treat the last point in the series as a reversal.
+
+    Yields
+    ------
+    cycle : tuple
+        Each tuple contains three floats (low, high, mult), where low and high
+        define cycle amplitude and mult equals to 1.0 for full cycles and 0.5
+        for half cycles.
     """
     points = deque()
 
-    for x in reversals(series):
+    for x in reversals(series, left=left, right=right):
         points.append(x)
         while len(points) >= 3:
             # Form ranges X and Y from the three most recent points
@@ -94,18 +122,29 @@ def extract_cycles(series):
             points.pop()
 
 
-def count_cycles(series, ndigits=None):
-    """
-    Returns a sorted list containig pairs of cycle magnitude and count.
+def count_cycles(series, ndigits=None, left=False, right=False):
+    """Count cycles in the series.
+
+    Parameters
+    ----------
+    series : iterable sequence of numbers
+    ndigits : int, optional
+        Round cycle magnitudes to the given number of digits before counting.
+    left: bool, optional
+        If True, treat the first point in the series as a reversal.
+    right: bool, optional
+        If True, treat the last point in the series as a reversal.
+
+    Returns
+    -------
+    A sorted list containing pairs of cycle magnitude and count.
     One-half cycles are counted as 0.5, so the returned counts may not be
-    whole numbers. The cycles are extracted from the iterable *series*
-    using the extract_cycles function. If *ndigits* is given the cycles
-    will be rounded to the given number of digits before counting.
+    whole numbers.
     """
     counts = defaultdict(float)
     round_ = get_round_function(ndigits)
 
-    for low, high, mult in extract_cycles(series):
+    for low, high, mult in extract_cycles(series, left=left, right=right):
         delta = round_(abs(high - low))
         counts[delta] += mult
     return sorted(counts.items())
