@@ -2,6 +2,7 @@ from distutils.core import setup
 
 setup(
     name='rainflow',
+    package_dir={"": "src"},
     py_modules=['rainflow'],
     version='2.0.0',
     description='Implementation of ASTM E1049-85 rainflow cycle counting algorythm',
