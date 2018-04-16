@@ -11,6 +11,12 @@ install:
 - pip install .
 script:
 - python -m unittest discover -s tests
+- pandoc --to rst -o README.rst README.md
+- python setup.py sdist
+addons:
+  apt:
+    packages:
+      - pandoc
 deploy:
   provider: pypi
   user: iamlikeme
