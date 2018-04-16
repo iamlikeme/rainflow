@@ -1,4 +1,4 @@
-import unittest, rainflow, random, itertools
+import unittest, rainflow, random, itertools, pkg_resources
 
 
 class TestRainflowCounting(unittest.TestCase):
@@ -38,3 +38,10 @@ class TestRainflowCounting(unittest.TestCase):
     def test_series_with_zero_derivatives(self):
     	series = itertools.chain(*([x, x] for x in self.series))
     	self.assertEqual(rainflow.count_cycles(series), self.cycles)
+
+
+class TestDistribution(unittest.TestCase):
+
+    def test_version(self):
+        dist = pkg_resources.get_distribution("rainflow")
+        self.assertEqual(dist.version, rainflow.__version__)
