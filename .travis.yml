@@ -7,17 +7,16 @@ python:
 - '3.4'
 - '3.5'
 - '3.6'
-install:
-- pip install .
-script:
-- python -m unittest discover -s tests
-- pandoc --to rst -o README.rst README.md
-- python setup.py sdist
-- tar -tf dist/rainflow-2.0.0.tar.gz
 addons:
   apt:
     packages:
       - pandoc
+install:
+- pip install .
+script:
+- python -m unittest discover -s tests
+before_deploy:
+- pandoc --to rst -o README.rst README.md
 deploy:
   provider: pypi
   user: iamlikeme
