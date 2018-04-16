@@ -13,6 +13,7 @@ script:
 - python -m unittest discover -s tests
 - pandoc --to rst -o README.rst README.md
 - python setup.py sdist
+- tar -tf dist/rainflow-2.0.0.tar.gz
 addons:
   apt:
     packages:
