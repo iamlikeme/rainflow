@@ -1,5 +1,5 @@
 include README.md
 include README.rst
-include LICENSE
+include LICENSE.txt
 include MANIFEST.in
 include tests/*.py
