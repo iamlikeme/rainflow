@@ -12,7 +12,7 @@ setup(
     author_email='i.am.like.me@gmail.com',
     url='https://github.com/iamlikeme/rainflow/',
     download_url=(
-        'https://github.com/iamlikeme/rainflow/archive/{}.tar.gz'
+        'https://github.com/iamlikeme/rainflow/archive/v{}.tar.gz'
         .format(version)
     ),
     classifiers=[],
