@@ -1,7 +1,7 @@
 from distutils.core import setup
 import os
 
-version = "2.1.0"
+version = "2.1.1"
 this_dir = os.path.dirname(__file__)
 
 with open(os.path.join(this_dir, "README.md"), "rb") as fo:
@@ -14,7 +14,6 @@ setup(
     version=version,
     description='Implementation of ASTM E1049-85 rainflow cycle counting algorythm',
     long_description=long_description,
-    long_description_content_type="text/markdown",
     author='Piotr Janiszewski',
     author_email='i.am.like.me@gmail.com',
     url='https://github.com/iamlikeme/rainflow/',
