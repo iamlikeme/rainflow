@@ -3,13 +3,13 @@
 Implements rainflow cycle counting algorythm for fatigue analysis
 according to section 5.4.4 in ASTM E1049-85 (2011).
 """
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 from collections import deque, defaultdict
 import functools
 
 
-def get_round_function(ndigits=None):
+def _get_round_function(ndigits=None):
     if ndigits is None:
         def func(x):
             return x
@@ -142,7 +142,7 @@ def count_cycles(series, ndigits=None, left=False, right=False):
     whole numbers.
     """
     counts = defaultdict(float)
-    round_ = get_round_function(ndigits)
+    round_ = _get_round_function(ndigits)
 
     for low, high, mult in extract_cycles(series, left=left, right=right):
         delta = round_(abs(high - low))
