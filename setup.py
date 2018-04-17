@@ -4,8 +4,8 @@ import os
 version = "2.1.0"
 this_dir = os.path.dirname(__file__)
 
-with open(os.path.join(this_dir, "README.md"), encoding="utf8") as fo:
-    long_description = fo.read()
+with open(os.path.join(this_dir, "README.md"), "rb") as fo:
+    long_description = fo.read().decode("utf8")
 
 setup(
     name='rainflow',
