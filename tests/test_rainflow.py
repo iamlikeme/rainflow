@@ -1,4 +1,4 @@
-import unittest, rainflow, random, itertools, pkg_resources, numpy
+import unittest, rainflow, random, itertools, pkg_resources
 
 
 class TestRainflowCounting(unittest.TestCase):
@@ -87,14 +87,14 @@ class TestRainflowCounting(unittest.TestCase):
         means = []
         for low, high, mult in rainflow.extract_cycles(refcase, True, True):
             cycles.append(mult)
-            amp = numpy.round(high - 0.5 * (high + low), 4)
+            amp = round(high - 0.5 * (high + low), 4)
             amps.append(amp)
-            mean = numpy.round(0.5 * (high + low), 4)
+            mean = round(0.5 * (high + low), 4)
             means.append(mean)
 
-        assert numpy.array_equal(cycles, cycle_ref)
-        assert numpy.array_equal(amps, amp_ref)
-        assert numpy.array_equal(means, mean_ref)
+        self.assertEqual(cycles, cycle_ref)
+        self.assertEqual(amps, amp_ref)
+        self.assertEqual(means, mean_ref)
 
 
 class TestDistribution(unittest.TestCase):
