@@ -1,7 +1,7 @@
 from distutils.core import setup
 import os
 
-version = "2.1.1"
+version = "2.1.2"
 this_dir = os.path.dirname(__file__)
 
 with open(os.path.join(this_dir, "README.md"), "rb") as fo:
