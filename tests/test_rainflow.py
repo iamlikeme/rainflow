@@ -39,6 +39,20 @@ class TestRainflowCounting(unittest.TestCase):
     	series = itertools.chain(*([x, x] for x in self.series))
     	self.assertEqual(rainflow.count_cycles(series), self.cycles)
 
+    def test_order_of_remaining_halves(self):
+        cycle_ref = [0.5, 0.5, 0.5, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5]
+        mean_ref = [-1.0, -0.5, -1.0, 1.0, 1.0, 0.5, 0.0, 1.0, -1.0]
+
+        cycles = []
+        means = []
+        for low, high, mult in rainflow.extract_cycles(self.series, True, True):
+            cycles.append(mult)
+            mean = 0.5 * (high + low)
+            means.append(mean)
+
+        self.assertEqual(cycles, cycle_ref)
+        self.assertEqual(means, mean_ref)
+
 
 class TestDistribution(unittest.TestCase):
 

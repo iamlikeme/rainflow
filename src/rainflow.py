@@ -106,7 +106,7 @@ def extract_cycles(series, left=False, right=False):
             elif len(points) == 3:
                 # Y contains the starting point
                 # Count Y as one-half cycle and discard the first point
-                yield points[-3], points[-2], 0.5
+                yield points[0], points[1], 0.5
                 points.popleft()
             else:
                 # Count Y as one cycle and discard the peak and the valley of Y
@@ -118,8 +118,8 @@ def extract_cycles(series, left=False, right=False):
     else:
         # Count the remaining ranges as one-half cycles
         while len(points) > 1:
-            yield points[-2], points[-1], 0.5
-            points.pop()
+            yield points[0], points[1], 0.5
+            points.popleft()
 
 
 def count_cycles(series, ndigits=None, left=False, right=False):
