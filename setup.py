@@ -17,6 +17,7 @@ setup(
     author='Piotr Janiszewski',
     author_email='i.am.like.me@gmail.com',
     url='https://github.com/iamlikeme/rainflow/',
+    license="MIT",
     download_url=(
         'https://github.com/iamlikeme/rainflow/archive/v{}.tar.gz'
         .format(version)
