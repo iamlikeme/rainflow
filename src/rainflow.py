@@ -151,7 +151,12 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
     counts = defaultdict(float)
     round_ = _get_round_function(ndigits)
 
+    if (not series):
+        return []
+
     max_range = max(series) - min(series)
+    if max_range == 0:
+        return []
 
     # check for mutually exclusive options: ndigits, nbins, binsize
     if (ndigits is not None) and ((nbins is not None) or (binsize is not None)) :
