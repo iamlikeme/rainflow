@@ -7,7 +7,7 @@ __version__ = "2.1.2"
 
 from collections import deque, defaultdict
 import functools
-
+import math
 
 def _get_round_function(ndigits=None):
     if ndigits is None:
@@ -122,7 +122,7 @@ def extract_cycles(series, left=False, right=False):
             points.popleft()
 
 
-def count_cycles(series, ndigits=None, left=False, right=False):
+def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, right=False):
     """Count cycles in the series.
 
     Parameters
@@ -130,11 +130,18 @@ def count_cycles(series, ndigits=None, left=False, right=False):
     series : iterable sequence of numbers
     ndigits : int, optional
         Round cycle magnitudes to the given number of digits before counting.
+    nbins : int, optional
+        Specifies the number of cycle-counting bins
+    binsize : int, optional
+        Specifies the width of each cycle-counting bin
     left: bool, optional
         If True, treat the first point in the series as a reversal.
     right: bool, optional
         If True, treat the last point in the series as a reversal.
 
+    ndigits, nbins and binsize are mutually exclusive - only one of the three can
+    be specified
+    
     Returns
     -------
     A sorted list containing pairs of cycle magnitude and count.
@@ -144,7 +151,39 @@ def count_cycles(series, ndigits=None, left=False, right=False):
     counts = defaultdict(float)
     round_ = _get_round_function(ndigits)
 
-    for low, high, mult in extract_cycles(series, left=left, right=right):
-        delta = round_(abs(high - low))
-        counts[delta] += mult
+    max_range = max(series) - min(series)
+
+    # check for mutually exclusive options: ndigits, nbins, binsize
+    if (ndigits is not None) and ((nbins is not None) or (binsize is not None)) :
+        raise ValueError("Specify only one option from ndigits, nbins or binsize")
+    if (nbins is not None) and (binsize is not None) :
+        raise ValueError("Specify only one option from nbins or binsize")
+
+    # if neither nbins nor binsize is specified
+    if (nbins is None) and (binsize is None):
+        for low, high, mult in extract_cycles(series, left=left, right=right):
+            delta = round_(abs(high - low))
+            counts[delta] += mult
+    else:
+        # if nbins is specified
+        if nbins is not None:
+            # if number of bins for range hase been defined, 
+            # then group the count data accordingly
+            binsize = max_range / nbins
+        # else binsize is specified
+        else:
+            nbins = math.ceil(max_range / binsize)
+        # save cycle counts to dictionary where key is the bin index, not range
+        counts_ix = defaultdict(int)
+        for i in range(nbins):
+            counts_ix[i] = 0
+        for low, high, mult in extract_cycles(series, left=left, right=right):
+            binIndex = math.floor(abs(high - low) / binsize)
+            # handle possibility of range equaliing max range
+            if binIndex == nbins:
+                binIndex = nbins - 1
+            counts_ix[binIndex] += mult
+        # save count data to dictionary where key is the range
+        counts = dict((k*binsize,v) for k,v in counts_ix.items())
+    
     return sorted(counts.items())
