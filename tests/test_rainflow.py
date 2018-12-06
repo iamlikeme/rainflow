@@ -56,49 +56,49 @@ class TestRainflowCounting(unittest.TestCase):
 
     def test_rainflow_nbins(self):
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, nbins=1),
+            rainflow.count_cycles(self.series, left=True, right=True, nbins=1),
             self.cycles_nbins_1,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, nbins=2),
+            rainflow.count_cycles(self.series, left=True, right=True, nbins=2),
             self.cycles_nbins_2,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, nbins=5),
+            rainflow.count_cycles(self.series, left=True, right=True, nbins=5),
             self.cycles_nbins_5,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, nbins=9),
+            rainflow.count_cycles(self.series, left=True, right=True, nbins=9),
             self.cycles_nbins_9,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, nbins=10),
+            rainflow.count_cycles(self.series, left=True, right=True, nbins=10),
             self.cycles_nbins_10,
         )
 
     def test_rainflow_binsize(self):
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, binsize=1),
+            rainflow.count_cycles(self.series, left=True, right=True, binsize=1),
             self.cycles_binsize_1,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, binsize=2),
+            rainflow.count_cycles(self.series, left=True, right=True, binsize=2),
             self.cycles_binsize_2,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, binsize=3),
+            rainflow.count_cycles(self.series, left=True, right=True, binsize=3),
             self.cycles_binsize_3,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, binsize=5),
+            rainflow.count_cycles(self.series, left=True, right=True, binsize=5),
             self.cycles_binsize_5,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, binsize=9),
+            rainflow.count_cycles(self.series, left=True, right=True, binsize=9),
             self.cycles_binsize_9,
         )
         self.assertEqual(
-            rainflow.count_cycles(self.series[1:-1], left=True, right=True, binsize=10),
+            rainflow.count_cycles(self.series, left=True, right=True, binsize=10),
             self.cycles_binsize_10,
         )
 
