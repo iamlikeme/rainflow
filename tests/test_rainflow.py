@@ -102,7 +102,7 @@ class TestRainflowCounting(unittest.TestCase):
         )
 
     def test_series_with_zero_derivatives(self):
-    	series = itertools.chain(*([x, x] for x in self.series))
+    	series = list(itertools.chain(*([x, x] for x in self.series)))
     	self.assertEqual(rainflow.count_cycles(series), self.cycles)
 
     def test_order_of_remaining_halves(self):
