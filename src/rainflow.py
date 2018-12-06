@@ -172,13 +172,13 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
             binsize = max_range / nbins
         # else binsize is specified
         else:
-            nbins = math.ceil(max_range / binsize)
+            nbins = int(math.ceil(max_range / binsize))
         # save cycle counts to dictionary where key is the bin index, not range
         counts_ix = defaultdict(int)
         for i in range(nbins):
             counts_ix[i] = 0
         for low, high, mult in extract_cycles(series, left=left, right=right):
-            binIndex = math.floor(abs(high - low) / binsize)
+            binIndex = int(abs(high - low) / binsize)
             # handle possibility of range equaliing max range
             if binIndex == nbins:
                 binIndex = nbins - 1
