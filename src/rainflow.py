@@ -146,7 +146,8 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
     
     Returns
     -------
-    A sorted list containing pairs of cycle magnitude and count.
+    A sorted list containing pairs of cycle bin value and count.
+    The bin values represent the right-hand edge value of the bins.
     One-half cycles are counted as 0.5, so the returned counts may not be
     whole numbers.
     """
@@ -191,6 +192,6 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
                 binIndex = nbins - 1
             counts_ix[binIndex] += mult
         # save count data to dictionary where key is the range
-        counts = dict((k*binsize,v) for k,v in counts_ix.items())
+        counts = dict(((k+1)*binsize,v) for k,v in counts_ix.items())
     
     return sorted(counts.items())
