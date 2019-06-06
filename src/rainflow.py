@@ -146,10 +146,10 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
     
     Returns
     -------
-    A sorted list containing pairs of cycle bin value and count.
-    The bin values represent the right-hand edge value of the bins.
+    A sorted list containing pairs of cycle magnitude and count.
     One-half cycles are counted as 0.5, so the returned counts may not be
-    whole numbers.
+    whole numbers. If binning is used, the cycle count magnitude corresponds
+    to the right edge of the bin.
     """
     counts = defaultdict(float)
     round_ = _get_round_function(ndigits)
