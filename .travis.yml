@@ -8,16 +8,12 @@ python:
 - '3.4'
 - '3.5'
 - '3.6'
-addons:
-  apt:
-    packages:
-      - pandoc
+- '3.7'
+- '3.8'
 install:
 - pip install .
 script:
 - python -m unittest discover -s tests
-before_deploy:
-- pandoc --to rst -o README.rst README.md
 deploy:
   provider: pypi
   user: iamlikeme
