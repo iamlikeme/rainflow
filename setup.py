@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 import os
 
 
@@ -33,6 +33,7 @@ setup(
     version=version,
     description='Implementation of ASTM E1049-85 rainflow cycle counting algorithm',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Piotr Janiszewski',
     author_email='i.am.like.me@gmail.com',
     url='https://github.com/iamlikeme/rainflow/',
