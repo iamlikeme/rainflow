@@ -34,7 +34,7 @@ number of cycles:
      (1.102640610792428, 0.5)]
 ```
 
-Not interested in all the decimals? Use *ndigits*:
+Want to round the cycle magnitudes? Use *ndigits*, *nbins* or *binsize*:
 ```python
 >>> rainflow.count_cycles(y, ndigits=2)
     [(0.11, 1.5), (0.21, 1.5), (0.37, 0.5), (0.44, 0.5), (0.48, 0.5), (0.53, 0.5),
