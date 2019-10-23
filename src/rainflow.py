@@ -4,12 +4,12 @@ Implements rainflow cycle counting algorythm for fatigue analysis
 according to section 5.4.4 in ASTM E1049-85 (2011).
 """
 from __future__ import division
-
-__version__ = "2.1.2"
-
 from collections import deque, defaultdict
 import functools
 import math
+
+__version__ = "2.2.0"
+
 
 def _get_round_function(ndigits=None):
     if ndigits is None:
