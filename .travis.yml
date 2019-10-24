@@ -1,8 +1,8 @@
 language: python
 branches:
   only:
-    - master
-    - /^v\d+\.\d+\.\d+$/
+  - master
+  - "/^v\\d+\\.\\d+\\.\\d+$/"
 python:
 - '2.7'
 - '3.4'
@@ -16,9 +16,9 @@ script:
 - python -m unittest discover -s tests
 deploy:
   provider: pypi
-  user: iamlikeme
+  user: __token__
   password:
-    secure: IuhH3NEYbYlV+AZKg2ytHAJSOWIUQZ1brpTjzIVYdhOiQ/uF+cp9LZIV8O7EpBBWABqSecKw937qLIkIyuxU5sP6J3kk538Q1GK2cbnwfy+DyMxlNrH0Yz7N9P7ouQXpdL8Za1yGH1vkPvq2p8u7qKW9IZb9rCNG7nX+snHlCPJhrv7EBwV5MImZPJuVF9E+WukPGg7DN5Ehvp7jb87CljIE3cwkiL18REVh0bMoQrSvnWqO19s0Wo++nrhha2IPT43Y+EWKb4AOK2acPJEKKhPDdobSF9lfmGOGWL8+A9QOCSvaryfPiHVx+vyfRuJ4yr2cGJrXJX4U7vD4m7CiEcADl0uPwJxNcrwWIqVgc3KqfoY7B5FoIyMUir4J1kuFYTtQj4zFzeXBPCVpT+psTMEOXoD1pNCH3HRVS9x3NY9gU2EACXBoffEvpcSK0WVgrcG/PmMNnG6fTrOJPg+ztHHSs1Yb5nW3dwpdR/6qabj11aIaLGRh7dBLqO8VYw+bztGXSIIX7dDP9ss4juUjDWzuMlbbEsk3eWayhInnbNBLpxh/ivCUxV1F1+kxW4v2Z2xyxIzxhP2CwnbtedVcQU1A43tTp2bjT5ui8mZdYMwJJlwrCUjxLJnllj7Y5aGNv5B5EcwY8wK+LWJz5PNkpiGgjgckAdmJMi57wTnWNe4=
+    secure: diZjE896gqzWYxIE1xcxTfcQZJoEZ7DHVrGoexC7yj316XPA7fEMZjIvwthgfYG3w201lkLV+NmHEA+Rj9zy/ljJILtI5BelOETMnYfN81W1mCHJ/xiNEVBl0VU/ApEASWGLB0BBt505S9ROZGGb2Fcm6OY9zq3rOImdyRjjd5LOOZlDcnTgq1SWRx01n2Gbm2SC6Gda2EgDxD47D1/l94JVwWi7pNwBSiF3AUp5ycATAcMRTgjGeExOy3f/JxvI/6f3KdFXY5YLwY4yBtFRAkhJjH5iNkGTBG1J+RepyGYC4Yez8lMOITrEolB1ObpihOe0xK3TTNTpWFMOL43WhOdu+UpZyPht/s+GPOOnI+fGXG0cUsw3zBciagnXAlMtZih7SbXbprypAbxja747QoL5I1QyB7/sXKdXF+htk66MLX5IRpYJbSoS9MPvwfPK4DtTE5Z+Ixc5Sy1SjCakv3hY1okw/oywGi9kbP5l9ZXzkdeRNQ7SRyWDVhtcCJIO/3P8fz7ulQZdFsKUxXT8Pyb/KzOib3/sXnyqZlPvEYuINEw/nt2Z/ec6pffUD5PrugbQy8KDtMzVbqU2tX8Xkj0VXPFLw0Ouy5+oUyKWroYL6MQRsQ0qpze44IJuGaEBhPFjZSRxTES4E36x4XVjx8bEGL/Z36zMMt5Pq2kVF+A=
   on:
     tags: true
     python: '3.6'
