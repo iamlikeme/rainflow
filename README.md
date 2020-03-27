@@ -10,12 +10,21 @@ Supports both Python 2 and 3.
 Installation
 ------------
 
+`rainflow` is available [on PyPI](https://pypi.org/project/rainflow/):
+
 ```
 pip install rainflow
 ```
 
+and [on conda-forge](https://github.com/conda-forge/rainflow-feedstock):
+
+```
+conda install rainflow --channel conda-forge
+```
+
 Usage
 -----
+
 Let's generate a sample time series of some load. Here we create a numpy array but any iterable of numbers would work:
 ```python
 >>> import numpy as np
