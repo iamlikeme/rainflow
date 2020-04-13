@@ -59,6 +59,8 @@ If you need more detailed output, like cycle lows, highs or means, use `extract_
 
 Running tests
 -------------
+
 ```
-python -m unittest tests/*.py
+pip install .[dev]
+pytest
 ```

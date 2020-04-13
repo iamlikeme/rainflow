@@ -32,6 +32,8 @@ setup(
     py_modules=['rainflow'],
     version=version,
     description='Implementation of ASTM E1049-85 rainflow cycle counting algorithm',
+    extras_require={"dev": ["pytest ~= 4.6"]},
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4",
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Piotr Janiszewski',
