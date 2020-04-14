@@ -1,5 +1,4 @@
 import itertools
-import pkg_resources
 import pytest
 import rainflow
 import random
@@ -146,8 +145,3 @@ def test_extract_cycles_order_of_half_cycles(series):
         (-1.0, 0.5),
     ]
     assert result == expected
-
-
-def test_package_version():
-    dist = pkg_resources.get_distribution("rainflow")
-    assert dist.version == rainflow.__version__

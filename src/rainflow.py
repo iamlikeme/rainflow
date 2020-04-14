@@ -8,7 +8,12 @@ from collections import deque, defaultdict
 import functools
 import math
 
-__version__ = "2.2.0"
+try:
+    from importlib import metadata as _importlib_metadata
+except ImportError:
+    import importlib_metadata as _importlib_metadata
+
+__version__ = _importlib_metadata.version("rainflow")
 
 
 def _get_round_function(ndigits=None):
