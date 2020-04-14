@@ -4,8 +4,7 @@ Rainflow
 [![Build Status](https://travis-ci.org/iamlikeme/rainflow.svg?branch=master)](https://travis-ci.org/iamlikeme/rainflow)
 
 `rainflow` is a Python implementation of the ASTM E1049-85 rainflow cycle counting
-algorythm for fatigue analysis. No dependencies beside Python's standard library.
-Supports both Python 2 and 3.
+algorythm for fatigue analysis. Supports both Python 2 and 3.
 
 Installation
 ------------
