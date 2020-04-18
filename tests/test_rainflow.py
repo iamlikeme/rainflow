@@ -155,24 +155,9 @@ def test_count_cycles_series_with_zero_derivatives(series, cycles, counts):
 
 
 @pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_extract_cycles_low_high_is_sorted(series, cycles, counts):
-    assert all(
-        low <= high
-        for low, high, mult in rainflow.extract_cycles(series)
-    )
-
-
-@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_extract_cycles_cycle_ordering(series, cycles, counts):
-    result = [
-        (high - low, 0.5 * (high + low), mult)
-        for low, high, mult in rainflow.extract_cycles(series)
-    ]
-    expected = [
-        (rng, mean, count)
-        for rng, mean, count, i_start, i_end in cycles
-    ]
-    assert result == expected
+def test_extract_cycles(series, cycles, counts):
+    result = list(rainflow.extract_cycles(series))
+    assert result == cycles
 
 
 @pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
