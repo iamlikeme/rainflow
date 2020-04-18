@@ -40,24 +40,23 @@ def reversals(series):
 
     Yields
     ------
-    float
-        Reversal points.
+    Reversal points as tuples (index, value).
     """
     series = iter(series)
 
     x_last, x = next(series), next(series)
     d_last = (x - x_last)
 
-    yield x_last
-    for x_next in series:
+    yield 0, x_last
+    for index, x_next in enumerate(series, start=1):
         if x_next == x:
             continue
         d_next = x_next - x
         if d_last * d_next < 0:
-            yield x
+            yield index, x
         x_last, x = x, x_next
         d_last = d_next
-    yield x_next
+    yield index + 1, x_next
 
 
 def _sort_lows_and_highs(func):
@@ -89,7 +88,7 @@ def extract_cycles(series):
     """
     points = deque()
 
-    for x in reversals(series):
+    for index, x in reversals(series):
         points.append(x)
         while len(points) >= 3:
             # Form ranges X and Y from the three most recent points
