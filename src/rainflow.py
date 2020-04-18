@@ -26,22 +26,17 @@ def _get_round_function(ndigits=None):
     return func
 
 
-def reversals(series, left=False, right=False):
+def reversals(series):
     """Iterate reversal points in the series.
 
     A reversal point is a point in the series at which the first derivative
     changes sign. Reversal is undefined at the first (last) point because the
     derivative before (after) this point is undefined. The first and the last
-    points may be treated as reversals by setting the optional parameters
-    `left` and `right` to True.
+    points are treated as reversals.
 
     Parameters
     ----------
     series : iterable sequence of numbers
-    left: bool, optional
-        If True, yield the first point in the series (treat it as a reversal).
-    right: bool, optional
-        If True, yield the last point in the series (treat it as a reversal).
 
     Yields
     ------
@@ -53,8 +48,7 @@ def reversals(series, left=False, right=False):
     x_last, x = next(series), next(series)
     d_last = (x - x_last)
 
-    if left:
-        yield x_last
+    yield x_last
     for x_next in series:
         if x_next == x:
             continue
@@ -63,8 +57,7 @@ def reversals(series, left=False, right=False):
             yield x
         x_last, x = x, x_next
         d_last = d_next
-    if right:
-        yield x_next
+    yield x_next
 
 
 def _sort_lows_and_highs(func):
@@ -80,16 +73,12 @@ def _sort_lows_and_highs(func):
 
 
 @_sort_lows_and_highs
-def extract_cycles(series, left=False, right=False):
+def extract_cycles(series):
     """Iterate cycles in the series.
 
     Parameters
     ----------
     series : iterable sequence of numbers
-    left: bool, optional
-        If True, treat the first point in the series as a reversal.
-    right: bool, optional
-        If True, treat the last point in the series as a reversal.
 
     Yields
     ------
@@ -100,7 +89,7 @@ def extract_cycles(series, left=False, right=False):
     """
     points = deque()
 
-    for x in reversals(series, left=left, right=right):
+    for x in reversals(series):
         points.append(x)
         while len(points) >= 3:
             # Form ranges X and Y from the three most recent points
@@ -129,7 +118,7 @@ def extract_cycles(series, left=False, right=False):
             points.popleft()
 
 
-def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, right=False):
+def count_cycles(series, ndigits=None, nbins=None, binsize=None):
     """Count cycles in the series.
 
     Parameters
@@ -141,14 +130,10 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
         Specifies the number of cycle-counting bins
     binsize : int, optional
         Specifies the width of each cycle-counting bin
-    left: bool, optional
-        If True, treat the first point in the series as a reversal.
-    right: bool, optional
-        If True, treat the last point in the series as a reversal.
 
-    ndigits, nbins and binsize are mutually exclusive - only one of the three can
-    be specified
-    
+    ndigits, nbins and binsize are mutually exclusive - only one of the three
+    can be specified.
+
     Returns
     -------
     A sorted list containing pairs of cycle magnitude and count.
@@ -174,7 +159,7 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
 
     # if neither nbins nor binsize is specified
     if (nbins is None) and (binsize is None):
-        for low, high, mult in extract_cycles(series, left=left, right=right):
+        for low, high, mult in extract_cycles(series):
             delta = round_(abs(high - low))
             counts[delta] += mult
     else:
@@ -190,7 +175,7 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
         counts_ix = defaultdict(int)
         for i in range(nbins):
             counts_ix[i] = 0
-        for low, high, mult in extract_cycles(series, left=left, right=right):
+        for low, high, mult in extract_cycles(series):
             binIndex = int(abs(high - low) / binsize)
             # handle possibility of range equaliing max range
             if binIndex == nbins:
@@ -198,5 +183,5 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None, left=False, rig
             counts_ix[binIndex] += mult
         # save count data to dictionary where key is the range
         counts = dict(((k+1)*binsize,v) for k,v in counts_ix.items())
-    
+
     return sorted(counts.items())
