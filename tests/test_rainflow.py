@@ -173,3 +173,9 @@ def test_extract_cycles_cycle_ordering(series, cycles, counts):
         for rng, mean, count, i_start, i_end in cycles
     ]
     assert result == expected
+
+
+@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
+def test_reversals_yield_value(series, cycles, counts):
+    for index, value in rainflow.reversals(series):
+        assert value == series[index]
