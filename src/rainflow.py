@@ -153,9 +153,8 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
 
     # if neither nbins nor binsize is specified
     if (nbins is None) and (binsize is None):
-        for low, high, mult in extract_cycles(series):
-            delta = round_(abs(high - low))
-            counts[delta] += mult
+        for rng, mean, mult, i_start, i_end in extract_cycles(series):
+            counts[round_(rng)] += mult
     else:
         # if nbins is specified
         if nbins is not None:
@@ -169,8 +168,8 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
         counts_ix = defaultdict(int)
         for i in range(nbins):
             counts_ix[i] = 0
-        for low, high, mult in extract_cycles(series):
-            binIndex = int(abs(high - low) / binsize)
+        for rng, mean, mult, i_start, i_end in extract_cycles(series):
+            binIndex = int(rng / binsize)
             # handle possibility of range equaliing max range
             if binIndex == nbins:
                 binIndex = nbins - 1
