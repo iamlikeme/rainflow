@@ -5,7 +5,6 @@ according to section 5.4.4 in ASTM E1049-85 (2011).
 """
 from __future__ import division
 from collections import deque, defaultdict
-import functools
 import math
 
 try:
@@ -59,19 +58,6 @@ def reversals(series):
     yield index + 1, x_next
 
 
-def _sort_lows_and_highs(func):
-    "Decorator for extract_cycles"
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        for low, high, mult in func(*args, **kwargs):
-            if low < high:
-                yield low, high, mult
-            else:
-                yield high, low, mult
-    return wrapper
-
-
-@_sort_lows_and_highs
 def extract_cycles(series):
     """Iterate cycles in the series.
 
@@ -82,18 +68,27 @@ def extract_cycles(series):
     Yields
     ------
     cycle : tuple
-        Each tuple contains three floats (low, high, mult), where low and high
-        define cycle amplitude and mult equals to 1.0 for full cycles and 0.5
-        for half cycles.
+        Each tuple contains (range, mean, count, start index, end index).
+        Count equals to 1.0 for full cycles and 0.5 for half cycles.
     """
     points = deque()
 
-    for index, x in reversals(series):
-        points.append(x)
+    def format_output(point1, point2, count):
+        i1, x1 = point1
+        i2, x2 = point2
+        rng = abs(x1 - x2)
+        mean = 0.5 * (x1 + x2)
+        return rng, mean, count, i1, i2
+
+    for point in reversals(series):
+        i, x = point
+        points.append(point)
+
         while len(points) >= 3:
             # Form ranges X and Y from the three most recent points
-            X = abs(points[-2] - points[-1])
-            Y = abs(points[-3] - points[-2])
+            x1, x2, x3 = points[-3][1], points[-2][1], points[-1][1]
+            X = abs(x3 - x2)
+            Y = abs(x2 - x1)
 
             if X < Y:
                 # Read the next point
@@ -101,11 +96,11 @@ def extract_cycles(series):
             elif len(points) == 3:
                 # Y contains the starting point
                 # Count Y as one-half cycle and discard the first point
-                yield points[0], points[1], 0.5
+                yield format_output(points[0], points[1], 0.5)
                 points.popleft()
             else:
                 # Count Y as one cycle and discard the peak and the valley of Y
-                yield points[-3], points[-2], 1.0
+                yield format_output(points[-3], points[-2], 1.0)
                 last = points.pop()
                 points.pop()
                 points.pop()
@@ -113,7 +108,7 @@ def extract_cycles(series):
     else:
         # Count the remaining ranges as one-half cycles
         while len(points) > 1:
-            yield points[0], points[1], 0.5
+            yield format_output(points[0], points[1], 0.5)
             points.popleft()
 
 
