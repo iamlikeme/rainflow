@@ -24,36 +24,68 @@ conda install rainflow --channel conda-forge
 Usage
 -----
 
-Let's generate a sample time series of some load. Here we create a numpy array but any iterable of numbers would work:
+Let's generate a sample time series.
+Here we simply generate a list of floats but `rainflow` works
+with any sequence of numbers, including numpy arrays and pandas Series.
+
 ```python
->>> import numpy as np
->>> x = np.linspace(0, 4, 200)
->>> y = 0.2 + 0.5 * np.sin(x) + 0.2 * np.cos(10*x) + 0.2 * np.sin(4*x)
+from math import sin, cos
+
+time = [4.0 * i / 200 for i in range(200 + 1)]
+signal = [0.2 + 0.5 * sin(t) + 0.2 * cos(10*t) + 0.2 * sin(4*t) for t in time]
 ```
 
-Function `count_cycles` returns a sorted list of the load ranges and the corresponding
+Function `count_cycles` returns a sorted list of ranges and the corresponding
 number of cycles:
+
 ```python
->>> import rainflow
->>> rainflow.count_cycles(y)
-    [(0.11022406179686783, 1.0), (0.11316419853821802, 0.5), (0.20607635324664902, 1.0),
-     (0.2148070281383265, 0.5), (0.36749670533564682, 0.5), (0.4389628182518176, 0.5),
-     (0.48294318988133728, 0.5), (0.52799626197601901, 0.5), (0.78150280937784777, 0.5),
-     (1.102640610792428, 0.5)]
+import rainflow
+
+rainflow.count_cycles(signal)
+# Output
+[(0.04258965150708488, 0.5),
+ (0.10973439445727551, 1.0),
+ (0.11294628078612906, 0.5),
+ (0.2057106991158965, 1.0),
+ (0.21467990941625242, 1.0),
+ (0.4388985979776988, 1.0),
+ (0.48305748051348263, 0.5),
+ (0.5286423866535466, 0.5),
+ (0.7809330293159786, 0.5),
+ (1.4343610172143002, 0.5)]
 ```
 
-Want to round the cycle magnitudes? Use *ndigits*, *nbins* or *binsize*:
+Cycle ranges can be binned or rounded to a specified number of digits
+using optional arguments *binsize*, *nbins* or *ndigits*:
+
 ```python
->>> rainflow.count_cycles(y, ndigits=2)
-    [(0.11, 1.5), (0.21, 1.5), (0.37, 0.5), (0.44, 0.5), (0.48, 0.5), (0.53, 0.5),
-     (0.78, 0.5), (1.1, 0.5)]
+rainflow.count_cycles(signal, binsize=0.5)
+# Output
+[(0.5, 5.5), (1.0, 1.0), (1.5, 0.5)]
+
+rainflow.count_cycles(signal, ndigits=1)
+# Output
+[(0.0, 0.5),
+ (0.1, 1.5),
+ (0.2, 2.0),
+ (0.4, 1.0),
+ (0.5, 1.0),
+ (0.8, 0.5),
+ (1.4, 0.5)]
 ```
 
-If you need more detailed output, like cycle lows, highs or means, use `extract_cycles`:
+Full information about each cycle, including mean value, can be obtained
+using the `extract_cycles` function:
+
 ```python
->>> for low, high, mult in rainflow.extract_cycles(y):
-...     mean = 0.5 * (high + low)
-...     rng = high - low
+for rng, mean, count, i_start, i_end in rainflow.extract_cycles(signal): 
+    print(rng, mean, count, i_start, i_end) 
+# Output             
+0.04258965150708488 0.4212948257535425 0.5 0 3
+0.11294628078612906 0.38611651111402034 0.5 3 13
+...
+0.4388985979776988 0.18268137509849586 1.0 142 158
+1.4343610172143002 0.3478109852897205 0.5 94 200
 ```
 
 Running tests
