@@ -3,29 +3,81 @@ import pytest
 import rainflow
 import random
 
+# A test case is a tuple containing three items:
+#  - a list representing a time series
+#  - a list of tuples, each containing:
+#    cycle range, cycle mean, count (0.5 or 1.0), start index, end index
+#  - a list of tuples, each containing: cycle range, cycles
+TEST_CASE_1 = (
+    [-2, 1, -3, 5, -1, 3, -4, 4, -2],
+    [
+        (3, -0.5, 0.5, 0, 1),
+        (4, -1.0, 0.5, 1, 2),
+        (4, 1.0, 1.0, 4, 5),
+        (8, 1.0, 0.5, 2, 3),
+        (9, 0.5, 0.5, 3, 6),
+        (8, 0.0, 0.5, 6, 7),
+        (6, 1.0, 0.5, 7, 8),
+    ],
+    [
+        (3, 0.5),
+        (4, 1.5),
+        (6, 0.5),
+        (8, 1.0),
+        (9, 0.5),
+    ],
+)
+TEST_CASE_2 = (
+    [
+        -1.5, 1.0, -3.0, 10.0, -1.0, 3.0, -8.0, 4.0, -2.0, 6.0,
+        -1.0, -4.0, -8.0, 2.0, 1.0, -5.0, 0.0, 2.5, -4.0, 1.0,
+        0.0, 2.0, -0.5,
+    ],
+    [
+        (2.5, -0.25, 0.5, 0, 1),
+        (4.0, -1.00, 0.5, 1, 2),
+        (4.0, 1.00, 1.0, 4, 5),
+        (13.0, 3.50, 0.5, 2, 3),
+        (6.0, 1.00, 1.0, 7, 8),
+        (14.0, -1.00, 1.0, 6, 9),
+        (7.0, -1.50, 1.0, 13, 15),
+        (1.0, 0.50, 1.0, 19, 20),
+        (18.0, 1.00, 0.5, 3, 12),
+        (10.5, -2.75, 0.5, 12, 17),
+        (6.5, -0.75, 0.5, 17, 18),
+        (6.0, -1.00, 0.5, 18, 21),
+        (2.5, 0.75, 0.5, 21, 22),
+    ],
+    [
+        (1.0, 1.0),
+        (2.5, 1.0),
+        (4.0, 1.5),
+        (6.0, 1.5),
+        (6.5, 0.5),
+        (7.0, 1.0),
+        (10.5, 0.5),
+        (13.0, 0.5),
+        (14.0, 1.0),
+        (18.0, 0.5),
+    ],
+)
 
-@pytest.fixture
-def series():
-    return [-2, 1, -3, 5, -1, 3, -4, 4, -2]
 
-
-@pytest.fixture
-def counts():
-    return [(3, 0.5), (4, 1.5), (6, 0.5), (8, 1.0), (9, 0.5)]
-
-
-def test_count_cycles(series, counts):
+@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
+def test_count_cycles(series, cycles, counts):
     result = rainflow.count_cycles(series)
     assert result == counts
 
 
-def test_count_cycles_ndigits(series, counts):
+@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
+def test_count_cycles_ndigits(series, cycles, counts):
     series = [x + 0.01 * random.random() for x in series]
     assert rainflow.count_cycles(series) != counts
     assert rainflow.count_cycles(series, ndigits=1) == counts
 
 
-def test_count_cycles_nbins(series):
+def test_count_cycles_nbins():
+    series = TEST_CASE_1[0]
     assert rainflow.count_cycles(series, nbins=1) == [(9, 4.0)]
     assert rainflow.count_cycles(series, nbins=2) == [
         (4.5, 2.0),
@@ -63,7 +115,8 @@ def test_count_cycles_nbins(series):
     ]
 
 
-def test_count_cycles_binsize(series):
+def test_count_cycles_binsize():
+    series = TEST_CASE_1[0]
     assert rainflow.count_cycles(series, binsize=10) == [(10, 4.0)]
     assert rainflow.count_cycles(series, binsize=9) == [(9, 4.0)]
     assert rainflow.count_cycles(series, binsize=5) == [
@@ -95,30 +148,28 @@ def test_count_cycles_binsize(series):
     ]
 
 
-def test_count_cycles_series_with_zero_derivatives(series, counts):
+@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
+def test_count_cycles_series_with_zero_derivatives(series, cycles, counts):
     series = list(itertools.chain.from_iterable([x, x] for x in series))
     assert rainflow.count_cycles(series) == counts
 
 
-def test_extract_cycles_low_high_is_sorted(series):
+@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
+def test_extract_cycles_low_high_is_sorted(series, cycles, counts):
     assert all(
         low <= high
         for low, high, mult in rainflow.extract_cycles(series)
     )
 
 
-def test_extract_cycles_order_of_half_cycles(series):
+@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
+def test_extract_cycles_cycle_ordering(series, cycles, counts):
     result = [
-        (0.5 * (high + low), mult)
+        (high - low, 0.5 * (high + low), mult)
         for low, high, mult in rainflow.extract_cycles(series)
     ]
     expected = [
-        (-0.5, 0.5),
-        (-1.0, 0.5),
-        (1.0, 1.0),
-        (1.0, 0.5),
-        (0.5, 0.5),
-        (0.0, 0.5),
-        (1.0, 0.5),
+        (rng, mean, count)
+        for rng, mean, count, i_start, i_end in cycles
     ]
     assert result == expected
