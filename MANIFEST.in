@@ -1,5 +1,5 @@
-include README.md
-include README.rst
-include LICENSE.txt
-include MANIFEST.in
-include tests/*.py
+# All files under revision control are automatically added by setuptool_scm.
+
+exclude .gitignore
+exclude .travis.yml
+recursive-exclude tests *
