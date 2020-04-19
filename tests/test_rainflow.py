@@ -154,6 +154,19 @@ def test_count_cycles_series_with_zero_derivatives(series, cycles, counts):
     assert rainflow.count_cycles(series) == counts
 
 
+def test_count_cycles_exclusive_arguments():
+    series = TEST_CASE_1[0]
+
+    with pytest.raises(ValueError):
+        rainflow.count_cycles(series, nbins=1, binsize=1)
+
+    with pytest.raises(ValueError):
+        rainflow.count_cycles(series, nbins=1, ndigits=1)
+
+    with pytest.raises(ValueError):
+        rainflow.count_cycles(series, binsize=1, ndigits=1)
+
+
 @pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
 def test_extract_cycles(series, cycles, counts):
     result = list(rainflow.extract_cycles(series))
