@@ -24,6 +24,8 @@ conda install rainflow --channel conda-forge
 Usage
 -----
 
+See release notes in [`CHANGELOG.md`](CHANGELOG.md).
+
 Let's generate a sample time series.
 Here we simply generate a list of floats but `rainflow` works
 with any sequence of numbers, including numpy arrays and pandas Series.
