@@ -120,20 +120,20 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
     series : iterable sequence of numbers
     ndigits : int, optional
         Round cycle magnitudes to the given number of digits before counting.
+        Use a negative value to round to tens, hundreds, etc.
     nbins : int, optional
-        Specifies the number of cycle-counting bins
+        Specifies the number of cycle-counting bins.
     binsize : int, optional
         Specifies the width of each cycle-counting bin
 
-    ndigits, nbins and binsize are mutually exclusive - only one of the three
-    can be specified.
+    Arguments ndigits, nbins and binsize are mutually exclusive.
 
     Returns
     -------
-    A sorted list containing pairs of cycle magnitude and count.
-    One-half cycles are counted as 0.5, so the returned counts may not be
-    whole numbers. If binning is used, the cycle count magnitude corresponds
-    to the right edge of the bin.
+    A sorted list containing pairs of range and cycle count.
+    The counts may not be whole numbers because the rainflow counting
+    algorithm may produce half-cycles. If binning is used then ranges
+    correspond to the right (high) edge of a bin.
     """
     if sum(value is not None for value in (ndigits, nbins, binsize)) > 1:
         raise ValueError(
