@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2020-04-20
+
 ### Changed
 - (#35) By default, the first and the last points in the time series
   are treated as reversals.
@@ -13,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of value only.
 - (#38) Function `extract_cycles` now yields range, mean, count, start index and
   end index for each cycle instead of low, high and count.
+- (#43) Arguments `binsize` and `nbins` to `count_cycles` produce bins which
+  include the right edge and exclude the left edge.
 
 ### Removed
 - (#35) Removed optional arguments `left` and `right` to functions
