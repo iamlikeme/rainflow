@@ -93,13 +93,13 @@ def test_count_cycles_nbins():
     assert rainflow.count_cycles(series, nbins=9) == [
         (1.0, 0.0),
         (2.0, 0.0),
-        (3.0, 0.0),
-        (4.0, 0.5),
-        (5.0, 1.5),
-        (6.0, 0.0),
-        (7.0, 0.5),
-        (8.0, 0.0),
-        (9.0, 1.5),
+        (3.0, 0.5),
+        (4.0, 1.5),
+        (5.0, 0.0),
+        (6.0, 0.5),
+        (7.0, 0.0),
+        (8.0, 1.0),
+        (9.0, 0.5),
     ]
     assert rainflow.count_cycles(series, nbins=10) == [
         (0.9, 0.0),
@@ -124,27 +124,27 @@ def test_count_cycles_binsize():
         (10, 2.0),
     ]
     assert rainflow.count_cycles(series, binsize=3) == [
-        (3, 0.0),
+        (3, 0.5),
         (6, 2.0),
-        (9, 2.0),
+        (9, 1.5),
     ]
     assert rainflow.count_cycles(series, binsize=2) == [
         (2, 0.0),
-        (4, 0.5),
-        (6, 1.5),
-        (8, 0.5),
-        (10, 1.5),
+        (4, 2.0),
+        (6, 0.5),
+        (8, 1.0),
+        (10, 0.5),
     ]
     assert rainflow.count_cycles(series, binsize=1) == [
         (1, 0.0),
         (2, 0.0),
-        (3, 0.0),
-        (4, 0.5),
-        (5, 1.5),
-        (6, 0.0),
-        (7, 0.5),
-        (8, 0.0),
-        (9, 1.5),
+        (3, 0.5),
+        (4, 1.5),
+        (5, 0.0),
+        (6, 0.5),
+        (7, 0.0),
+        (8, 1.0),
+        (9, 0.5),
     ]
 
 
@@ -152,6 +152,19 @@ def test_count_cycles_binsize():
 def test_count_cycles_series_with_zero_derivatives(series, cycles, counts):
     series = list(itertools.chain.from_iterable([x, x] for x in series))
     assert rainflow.count_cycles(series) == counts
+
+
+def test_count_cycles_exclusive_arguments():
+    series = TEST_CASE_1[0]
+
+    with pytest.raises(ValueError):
+        rainflow.count_cycles(series, nbins=1, binsize=1)
+
+    with pytest.raises(ValueError):
+        rainflow.count_cycles(series, nbins=1, ndigits=1)
+
+    with pytest.raises(ValueError):
+        rainflow.count_cycles(series, binsize=1, ndigits=1)
 
 
 @pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])

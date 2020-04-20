@@ -120,61 +120,59 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
     series : iterable sequence of numbers
     ndigits : int, optional
         Round cycle magnitudes to the given number of digits before counting.
+        Use a negative value to round to tens, hundreds, etc.
     nbins : int, optional
-        Specifies the number of cycle-counting bins
+        Specifies the number of cycle-counting bins.
     binsize : int, optional
         Specifies the width of each cycle-counting bin
 
-    ndigits, nbins and binsize are mutually exclusive - only one of the three
-    can be specified.
+    Arguments ndigits, nbins and binsize are mutually exclusive.
 
     Returns
     -------
-    A sorted list containing pairs of cycle magnitude and count.
-    One-half cycles are counted as 0.5, so the returned counts may not be
-    whole numbers. If binning is used, the cycle count magnitude corresponds
-    to the right edge of the bin.
+    A sorted list containing pairs of range and cycle count.
+    The counts may not be whole numbers because the rainflow counting
+    algorithm may produce half-cycles. If binning is used then ranges
+    correspond to the right (high) edge of a bin.
     """
+    if sum(value is not None for value in (ndigits, nbins, binsize)) > 1:
+        raise ValueError(
+            "Arguments ndigits, nbins and binsize are mutually exclusive"
+        )
+
     counts = defaultdict(float)
-    round_ = _get_round_function(ndigits)
+    cycles = (
+        (rng, count)
+        for rng, mean, count, i_start, i_end in extract_cycles(series)
+    )
 
-    try:
-        max_range = max(series) - min(series)
-        if max_range == 0:
-            return []
-    except ValueError:
-        return []
+    if binsize is not None:
+        for rng, count in cycles:
+            n = math.ceil(rng / binsize)
+            counts[n * binsize] += count
 
-    # check for mutually exclusive options: ndigits, nbins, binsize
-    if (ndigits is not None) and ((nbins is not None) or (binsize is not None)) :
-        raise ValueError("Specify only one option from ndigits, nbins or binsize")
-    if (nbins is not None) and (binsize is not None) :
-        raise ValueError("Specify only one option from nbins or binsize")
+        rng = binsize
+        while rng < max(counts):
+            counts.setdefault(rng, 0.0)
+            rng += binsize
 
-    # if neither nbins nor binsize is specified
-    if (nbins is None) and (binsize is None):
-        for rng, mean, mult, i_start, i_end in extract_cycles(series):
-            counts[round_(rng)] += mult
-    else:
-        # if nbins is specified
-        if nbins is not None:
-            # if number of bins for range hase been defined, 
-            # then group the count data accordingly
-            binsize = max_range / nbins
-        # else binsize is specified
-        else:
-            nbins = int(math.ceil(max_range / binsize))
-        # save cycle counts to dictionary where key is the bin index, not range
-        counts_ix = defaultdict(int)
+    elif nbins is not None:
+        binsize = (max(series) - min(series)) / nbins
+        for rng, count in cycles:
+            n = math.ceil(rng / binsize)
+            counts[n * binsize] += count
+
         for i in range(nbins):
-            counts_ix[i] = 0
-        for rng, mean, mult, i_start, i_end in extract_cycles(series):
-            binIndex = int(rng / binsize)
-            # handle possibility of range equaliing max range
-            if binIndex == nbins:
-                binIndex = nbins - 1
-            counts_ix[binIndex] += mult
-        # save count data to dictionary where key is the range
-        counts = dict(((k+1)*binsize,v) for k,v in counts_ix.items())
+            rng = (i + 1) * binsize
+            counts.setdefault(rng, 0.0)
+
+    elif ndigits is not None:
+        round_ = _get_round_function(ndigits)
+        for rng, count in cycles:
+            counts[round_(rng)] += count
+
+    else:
+        for rng, count in cycles:
+            counts[rng] += count
 
     return sorted(counts.items())
