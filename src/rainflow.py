@@ -81,7 +81,6 @@ def extract_cycles(series):
         return rng, mean, count, i1, i2
 
     for point in reversals(series):
-        i, x = point
         points.append(point)
 
         while len(points) >= 3:
