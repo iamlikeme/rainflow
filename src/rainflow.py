@@ -146,14 +146,16 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
     )
 
     if binsize is not None:
+        nbincounted = []
         for rng, count in cycles:
             n = math.ceil(rng / binsize)
             counts[n * binsize] += count
+            nbincounted.append(n)
 
-        rng = binsize
-        while rng < max(counts):
-            counts.setdefault(rng, 0.0)
-            rng += binsize
+        for n in range(0,max(nbincounted)):
+            if n not in nbincounted:
+                rng = n * binsize
+                counts.setdefault(rng, 0.0)
 
     elif nbins is not None:
         binsize = (max(series) - min(series)) / nbins
