@@ -4,11 +4,13 @@ import rainflow
 import random
 import math
 
-# A test case is a tuple containing three items:
+# A test case is a tuple containing the following items:
 #  - a list representing a time series
 #  - a list of tuples, each containing:
 #    cycle range, cycle mean, count (0.5 or 1.0), start index, end index
 #  - a list of tuples, each containing: cycle range, cycles
+#  - a boolean that indicates whether range and mean values
+#    are approximate (True) or exact (False)
 TEST_CASE_1 = (
     [-2, 1, -3, 5, -1, 3, -4, 4, -2],
     [
@@ -27,6 +29,7 @@ TEST_CASE_1 = (
         (8, 1.0),
         (9, 0.5),
     ],
+    False,
 )
 TEST_CASE_2 = (
     [
@@ -61,9 +64,13 @@ TEST_CASE_2 = (
         (14.0, 1.0),
         (18.0, 0.5),
     ],
+    False,
 )
 TEST_CASE_3 = (
-    [0.8*math.sin(2.*math.pi*0.5e-2*i)+0.2*math.sin(2.*math.pi*1.6e-2*i) for i in range(1001)],
+    [
+        0.8 * math.sin(0.01 * math.pi * i) + 0.2 * math.sin(0.032 * math.pi * i)
+        for i in range(1001)
+    ],
     [
         (0.09020631993390904, 0.638796382297327, 1.0, 26, 45),
         (0.7841230166856958, 0.3920615083428479, 0.5, 0, 70),
@@ -79,31 +86,47 @@ TEST_CASE_3 = (
         (1.906532656127565, 0.021793428070149834, 0.5, 643, 739),
         (1.7986374238678864, -0.032154188059689504, 0.5, 739, 834),
         (1.6512875405599488, 0.04152075359427937, 0.5, 834, 930),
-        (0.7841230166856932, -0.39206150834284836, 0.5, 930, 1000),     
+        (0.7841230166856932, -0.39206150834284836, 0.5, 930, 1000),
     ],
     [
-        (0.2, 4.0),
-        (0.4, 0.0),
-        (0.6, 0.0),
-        (0.8, 1.0),
-        (1.0, 0.0),
-        (1.2, 0.0),
-        (1.4, 0.0),
-        (1.6, 0.0),
-        (1.8, 2.0),
-        (2.0, 2.5),        
+        (0.025559850506591708, 1.0),
+        (0.025559850506592263, 1.0),
+        (0.09020631993390904, 1.0),
+        (0.09020631993390937, 1.0),
+        (0.7841230166856958, 0.5),
+        (0.7841230166856961, 0.5),
+        (1.6512875405599488, 0.5),
+        (1.651287540559949, 0.5),
+        (1.798637423867886, 0.5),
+        (1.7986374238678877, 0.5),
+        (1.9065326561275655, 0.5),
+        (1.9065326561275668, 0.5),
+        (1.9722034009805516, 0.5),
+        (1.9722034009805522, 0.5),
+        (1.9942872896932382, 0.5)
     ],
+    True,
 )
 
 
-@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_count_cycles(series, cycles, counts):
+@pytest.mark.parametrize(
+    ("series", "cycles", "counts", "approx"),
+    [TEST_CASE_1, TEST_CASE_2, TEST_CASE_3],
+)
+def test_count_cycles(series, cycles, counts, approx):
     result = rainflow.count_cycles(series)
-    assert result == counts
+    if approx:
+        expected = [(pytest.approx(rng), count) for rng, count in counts]
+    else:
+        expected = counts
+    assert result == expected
 
 
-@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_count_cycles_ndigits(series, cycles, counts):
+@pytest.mark.parametrize(
+    ("series", "cycles", "counts", "approx"),
+    [TEST_CASE_1, TEST_CASE_2],
+)
+def test_count_cycles_ndigits(series, cycles, counts, approx):
     series = [x + 0.01 * random.random() for x in series]
     assert rainflow.count_cycles(series) != counts
     assert rainflow.count_cycles(series, ndigits=1) == counts
@@ -148,7 +171,7 @@ def test_count_cycles_nbins():
     ]
 
 
-def test_count_cycles_binsize():
+def test_count_cycles_binsize_case_1():
     series = TEST_CASE_1[0]
     assert rainflow.count_cycles(series, binsize=10) == [(10, 4.0)]
     assert rainflow.count_cycles(series, binsize=9) == [(9, 4.0)]
@@ -179,17 +202,41 @@ def test_count_cycles_binsize():
         (8, 1.0),
         (9, 0.5),
     ]
-    series = TEST_CASE_3[0]
-    count_ref = TEST_CASE_3[2]
-    count = rainflow.count_cycles(series, binsize=0.2)
-    assert len(count_ref) == len(count)
-    for i,c in enumerate(count):
-        assert pytest.approx(c) == count_ref[i]
 
-@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_count_cycles_series_with_zero_derivatives(series, cycles, counts):
+
+def test_count_cycles_binsize_case_3():
+    series = TEST_CASE_3[0]
+    result = rainflow.count_cycles(series, binsize=0.2)
+    expected = [
+        (pytest.approx(rng), count)
+        for rng, count in [
+            (0.2, 4.0),
+            (0.4, 0.0),
+            (0.6, 0.0),
+            (0.8, 1.0),
+            (1.0, 0.0),
+            (1.2, 0.0),
+            (1.4, 0.0),
+            (1.6, 0.0),
+            (1.8, 2.0),
+            (2.0, 2.5),
+        ]
+    ]
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    ("series", "cycles", "counts", "approx"),
+    [TEST_CASE_1, TEST_CASE_2, TEST_CASE_3],
+)
+def test_count_cycles_series_with_zero_derivatives(series, cycles, counts, approx):
     series = list(itertools.chain.from_iterable([x, x] for x in series))
-    assert rainflow.count_cycles(series) == counts
+    result = rainflow.count_cycles(series)
+    if approx:
+        expected = [(pytest.approx(rng), count) for rng, count in counts]
+    else:
+        expected = counts
+    assert result == expected
 
 
 def test_count_cycles_exclusive_arguments():
@@ -205,13 +252,26 @@ def test_count_cycles_exclusive_arguments():
         rainflow.count_cycles(series, binsize=1, ndigits=1)
 
 
-@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_extract_cycles(series, cycles, counts):
+@pytest.mark.parametrize(
+    ("series", "cycles", "counts", "approx"),
+    [TEST_CASE_1, TEST_CASE_2, TEST_CASE_3],
+)
+def test_extract_cycles(series, cycles, counts, approx):
     result = list(rainflow.extract_cycles(series))
-    assert result == cycles
+    if approx:
+        expected = [
+            (pytest.approx(rng), pytest.approx(mean), count, i, j)
+            for (rng, mean, count, i, j) in cycles
+        ]
+    else:
+        expected = cycles
+    assert result == expected
 
 
-@pytest.mark.parametrize("series,cycles,counts", [TEST_CASE_1, TEST_CASE_2])
-def test_reversals_yield_value(series, cycles, counts):
+@pytest.mark.parametrize(
+    ("series", "cycles", "counts", "approx"),
+    [TEST_CASE_1, TEST_CASE_2, TEST_CASE_3],
+)
+def test_reversals_yield_value(series, cycles, counts, approx):
     for index, value in rainflow.reversals(series):
         assert value == series[index]
