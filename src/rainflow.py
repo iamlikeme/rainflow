@@ -141,30 +141,28 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
         )
 
     counts = defaultdict(float)
+    counts_n = defaultdict(int)
     cycles = (
         (rng, count)
         for rng, mean, count, i_start, i_end in extract_cycles(series)
     )
 
     if binsize is not None:
+        counts_n = defaultdict(int)
         for rng, count in cycles:
-            n = math.ceil(rng / binsize)
-            counts[n * binsize] += count
-
-        rng = binsize
-        while rng < max(counts):
-            counts.setdefault(rng, 0.0)
-            rng += binsize
+            n = int(math.ceil(rng / binsize))
+            counts_n[n] += count
+        for bin_i in range(1, max(counts_n)+1):
+            counts[bin_i * binsize] = counts_n.get(bin_i, 0.0)
 
     elif nbins is not None:
+        counts_n = defaultdict(int)
         binsize = (max(series) - min(series)) / nbins
         for rng, count in cycles:
-            n = math.ceil(rng / binsize)
-            counts[n * binsize] += count
-
-        for i in range(nbins):
-            rng = (i + 1) * binsize
-            counts.setdefault(rng, 0.0)
+            n = int(math.ceil(rng / binsize))
+            counts_n[n] += count
+        for bin_i in range(1, max(counts_n)+1):
+            counts[bin_i * binsize] = counts_n.get(bin_i, 0.0)
 
     elif ndigits is not None:
         round_ = _get_round_function(ndigits)
