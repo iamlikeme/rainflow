@@ -81,7 +81,6 @@ def extract_cycles(series):
         return rng, mean, count, i1, i2
 
     for point in reversals(series):
-        i, x = point
         points.append(point)
 
         while len(points) >= 3:
@@ -146,25 +145,18 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
         for rng, mean, count, i_start, i_end in extract_cycles(series)
     )
 
-    if binsize is not None:
-        for rng, count in cycles:
-            n = math.ceil(rng / binsize)
-            counts[n * binsize] += count
-
-        rng = binsize
-        while rng < max(counts):
-            counts.setdefault(rng, 0.0)
-            rng += binsize
-
-    elif nbins is not None:
+    if nbins is not None:
         binsize = (max(series) - min(series)) / nbins
-        for rng, count in cycles:
-            n = math.ceil(rng / binsize)
-            counts[n * binsize] += count
 
-        for i in range(nbins):
-            rng = (i + 1) * binsize
-            counts.setdefault(rng, 0.0)
+    if binsize is not None:
+        nmax = 0
+        for rng, count in cycles:
+            n = int(math.ceil(rng / binsize))  # using int for Python 2 compatibility
+            counts[n * binsize] += count
+            nmax = max(n, nmax)
+
+        for i in range(1, nmax):
+            counts.setdefault(i * binsize, 0.0)
 
     elif ndigits is not None:
         round_ = _get_round_function(ndigits)
