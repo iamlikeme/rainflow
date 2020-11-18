@@ -1,7 +1,7 @@
 language: python
 branches:
   only:
-  - master
+  - main
   - "/^v\\d+\\.\\d+\\.\\d+$/"
 python:
 - '2.7'
@@ -10,6 +10,7 @@ python:
 - '3.6'
 - '3.7'
 - '3.8'
+- '3.9'
 install:
 - python setup.py sdist
 - VERSION=$(python setup.py --version)
