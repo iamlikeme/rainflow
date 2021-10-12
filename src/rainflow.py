@@ -43,10 +43,14 @@ def reversals(series):
     """
     series = iter(series)
 
-    x_last, x = next(series), next(series)
+    x_last, x = next(series, None), next(series, None)
+    if x_last is None or x is None:
+        return
+
     d_last = (x - x_last)
 
     yield 0, x_last
+    index = None
     for index, x_next in enumerate(series, start=1):
         if x_next == x:
             continue
@@ -55,7 +59,9 @@ def reversals(series):
             yield index, x
         x_last, x = x, x_next
         d_last = d_next
-    yield index + 1, x_next
+
+    if index is not None:
+        yield index + 1, x_next
 
 
 def extract_cycles(series):
