@@ -269,9 +269,35 @@ def test_extract_cycles(series, cycles, counts, approx):
 
 
 @pytest.mark.parametrize(
+    ("series", "cycles"),
+    [
+        ([], []),
+        ([1], []),
+        ([1, 2], []),
+        ([1, 2, 3], [(2, 2.0, 0.5, 0, 2)]),
+    ]
+)
+def test_extract_cycles_small_series(series, cycles):
+    assert list(rainflow.extract_cycles(series)) == cycles
+
+
+@pytest.mark.parametrize(
     ("series", "cycles", "counts", "approx"),
     [TEST_CASE_1, TEST_CASE_2, TEST_CASE_3],
 )
 def test_reversals_yield_value(series, cycles, counts, approx):
     for index, value in rainflow.reversals(series):
         assert value == series[index]
+
+
+@pytest.mark.parametrize(
+    ("series", "reversals"),
+    [
+        ([], []),
+        ([1], []),
+        ([1, 2], [(0, 1)]),
+        ([1, 2, 3], [(0, 1), (2, 3)]),
+    ]
+)
+def test_reversals_small_series(series, reversals):
+    assert list(rainflow.reversals(series)) == reversals
