@@ -13,21 +13,25 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",    
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 [tool.poetry.dependencies]
 python = ">2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-importlib_metadata = { version = "*", python = "~2.7" }
+importlib_metadata = { version = "*", python = "<3.8" }
 
 [tool.poetry.dev-dependencies]
-pytest = "~4.6"
+pytest = [
+    { version = "~4", python = "~2.7" },
+    { version = "*", python = "~3" },
+    { version = "^6.2.5", python = "~3.10" },
+]
 more-itertools = { version = "<6", python = "~2.7" }
 
 [build-system]
