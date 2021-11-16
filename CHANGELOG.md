@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2021-11-16
+
+### Changed
+- (#56) `extract_cycles` now returns no cycles for very short time series
+  (containing zero or one reversals). Contributed by
+  [denis-jasselette-jc](https://github.com/denis-jasselette-jc).
+- (#57) Dropped tests for Python 3.4 and 3.5 due to the extra work required
+  to make the CI and tests work for these old versions.
+
+## [3.0.1] - 2020-11-18
+
+### Fixed
+
+- (#48) Fixed a bug which caused some bins to appear twice, with counts
+  distributed randomly between the two.
+  Contributed by [CWE0](https://github.com/CWE0).
+
 ## [3.0.0] - 2020-04-20
 
 ### Changed
