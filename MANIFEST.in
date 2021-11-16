@@ -1,5 +1,0 @@
-# All files under revision control are automatically added by setuptool_scm.
-
-exclude .gitignore
-exclude .travis.yml
-recursive-exclude tests *
