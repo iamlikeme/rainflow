@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.1] - 2021-12-28
+
+### Fixed
+
+- (#62) Due to floating point accuracy `count_cycles` sometimes returned
+  more bins than what was specified by argument `nbins`. Thank you
+  [Kyle6699](https://github.com/Kyle6699) for reporting the bug and
+  providing a test case.
+
 ## [3.1.0] - 2021-11-16
 
 ### Changed
