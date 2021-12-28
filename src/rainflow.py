@@ -157,11 +157,13 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
     if binsize is not None:
         nmax = 0
         for rng, count in cycles:
-            n = int(math.ceil(rng / binsize))  # using int for Python 2 compatibility
+            quotient = rng / binsize
+            n = int(math.ceil(quotient))  # using int for Python 2 compatibility
 
             if nbins and n > nbins:
-                # Due to floating point accuracy we may get n > nbins.
-                if math.remainder(rng, binsize) > 1e-6 * binsize:
+                # Due to floating point accuracy we may get n > nbins,
+                # in which case we move rng to the preceeding bin.
+                if (quotient % 1) > 1e-6:
                     raise Exception("Unexpected error")
                 n = n - 1
 
