@@ -301,3 +301,18 @@ def test_reversals_yield_value(series, cycles, counts, approx):
 )
 def test_reversals_small_series(series, reversals):
     assert list(rainflow.reversals(series)) == reversals
+
+
+def test_num_bins():
+    # This test checks for a bug reported in issue #60 where the
+    # returned number of bins was different than the nbins argument
+    # due to floating point accuracy.
+    series = [
+        0,
+        3517.860166127188,
+        -3093.4966492094213,
+        0,
+    ]
+    nbins = 100
+    result = rainflow.count_cycles(series, nbins=nbins)
+    assert len(result) == nbins
