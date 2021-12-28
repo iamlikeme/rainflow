@@ -158,6 +158,13 @@ def count_cycles(series, ndigits=None, nbins=None, binsize=None):
         nmax = 0
         for rng, count in cycles:
             n = int(math.ceil(rng / binsize))  # using int for Python 2 compatibility
+
+            if nbins and n > nbins:
+                # Due to floating point accuracy we may get n > nbins.
+                if math.remainder(rng, binsize) > 1e-6 * binsize:
+                    raise Exception("Unexpected error")
+                n = n - 1
+
             counts[n * binsize] += count
             nmax = max(n, nmax)
 
