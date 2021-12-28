@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rainflow"
-version = "3.1.0"
+version = "3.1.1"
 description = "Implementation of ASTM E1049-85 rainflow cycle counting algorithm"
 authors = ["Piotr Janiszewski <i.am.like.me@gmail.com>"]
 license = "MIT"
