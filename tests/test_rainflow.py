@@ -4,6 +4,11 @@ import rainflow
 import random
 import math
 
+try:
+    from importlib import metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata as importlib_metadata
+
 # A test case is a tuple containing the following items:
 #  - a list representing a time series
 #  - a list of tuples, each containing:
@@ -107,6 +112,11 @@ TEST_CASE_3 = (
     ],
     True,
 )
+
+
+def test_version():
+    # Ensure that rainflow.__version__ is the same as version set in pyproject.toml
+    assert rainflow.__version__ == importlib_metadata.version("rainflow")
 
 
 @pytest.mark.parametrize(
