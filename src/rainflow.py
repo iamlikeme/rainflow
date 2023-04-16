@@ -7,12 +7,7 @@ from __future__ import division
 from collections import deque, defaultdict
 import math
 
-try:
-    from importlib import metadata as _importlib_metadata
-except ImportError:
-    import importlib_metadata as _importlib_metadata
-
-__version__ = _importlib_metadata.version("rainflow")
+__version__ = "3.1.1"
 
 
 def _get_round_function(ndigits=None):

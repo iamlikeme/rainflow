@@ -23,7 +23,6 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-importlib_metadata = { version = "*", python = "<3.8" }
 
 [tool.poetry.dev-dependencies]
 pytest = [
@@ -31,6 +30,7 @@ pytest = [
     { version = "*", python = "~3" },
     { version = "^6.2.5", python = "~3.10" },
 ]
+importlib_metadata = { version = "*", python = "<3.8" }
 more-itertools = { version = "<6", python = "~2.7" }
 
 [build-system]
