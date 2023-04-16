@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2023-04-16
+
+### Changed
+- (#68, #70) Dropped support for Python 2.7 and 3.6.
+- (#66) `importlib.metadata` no longer used to evaluate `rainflow.__version__`.
+
 ## [3.1.1] - 2021-12-28
 
 ### Fixed
