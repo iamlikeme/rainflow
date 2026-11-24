@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-11-24
+
+### Changed
+- (#76) Dropped support for Python 3.7, 3.8, 3.9 and 3.10. Python 3.11 or
+  newer is now required.
+- (#76) Package metadata moved to the standard `[project]` table in
+  `pyproject.toml`. Building from the source distribution now requires
+  `poetry-core>=2.2`.
+
+### Fixed
+- (#74, #75) `reversals` omitted the last point of a series containing
+  exactly two points, so `extract_cycles` and `count_cycles` returned no
+  cycles for it instead of one half-cycle. Contributed by
+  [davidosterberg](https://github.com/davidosterberg).
+
 ## [3.2.0] - 2023-04-16
 
 ### Changed
