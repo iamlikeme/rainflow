@@ -1,6 +1,6 @@
 [project]
 name = "rainflow"
-version = "3.2.0"
+version = "3.3.0"
 description = "Implementation of ASTM E1049-85 rainflow cycle counting algorithm"
 authors = [{ name = "Piotr Janiszewski", email = "i.am.like.me@gmail.com" }]
 license = "MIT"

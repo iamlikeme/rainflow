@@ -7,7 +7,7 @@ from __future__ import division
 from collections import deque, defaultdict
 import math
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 
 def _get_round_function(ndigits=None):
